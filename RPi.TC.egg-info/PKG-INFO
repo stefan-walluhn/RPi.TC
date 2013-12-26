@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: RPi.TC
+Version: 0.1dev
+Summary: model railway control
+Home-page: http://www.terminal21.de
+Author: Stefan
+Author-email: stefan@terminal21.de
+License: GPLv3
+Description: Control model railway with Raspberry PI
+Keywords: model railway raspberry pi
+Platform: UNKNOWN

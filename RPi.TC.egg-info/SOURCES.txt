@@ -1,0 +1,9 @@
+setup.cfg
+setup.py
+RPi.TC.egg-info/PKG-INFO
+RPi.TC.egg-info/SOURCES.txt
+RPi.TC.egg-info/dependency_links.txt
+RPi.TC.egg-info/entry_points.txt
+RPi.TC.egg-info/not-zip-safe
+RPi.TC.egg-info/top_level.txt
+rpitc/__init__.py
