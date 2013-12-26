@@ -1,5 +1,17 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Command
 import sys, os
+
+class PyTest(Command):
+    user_options = []
+    def initialize_options(self):
+        pass
+    def finalize_options(self):
+        pass
+    def run(self):
+        import sys,subprocess
+        errno = subprocess.call([sys.executable, 'runtests.py'])
+        raise SystemExit(errno)
+
 
 version = '0.1'
 
@@ -9,6 +21,7 @@ setup(name='RPi.TC',
       long_description="""\
 Control model railway with Raspberry PI""",
       classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      cmdclass = {'test':PyTest},
       keywords='model railway raspberry pi',
       author='Stefan',
       author_email='stefan@terminal21.de',
