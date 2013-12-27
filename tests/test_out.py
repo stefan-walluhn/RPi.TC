@@ -1,6 +1,5 @@
 from rpitc.io import IO
 from rpitc.io.out import Out
-import RPi.GPIO as GPIO
 
 class TestOut:
 
@@ -8,8 +7,7 @@ class TestOut:
         self.out = Out(7)
 
     def teardown_method(self, method):
-        GPIO.output(self.out.pin, GPIO.LOW)
-        GPIO.cleanup()
+        self.out.off()
 
     def test_init(self):
         assert isinstance(self.out, Out)

@@ -1,6 +1,5 @@
 from rpitc.io import IO
 from rpitc.io.trigger import Trigger
-import RPi.GPIO as GPIO
 import time
 
 class TestTrigger:
@@ -9,8 +8,7 @@ class TestTrigger:
         self.trigger = Trigger(7, delay=1, status=IO.OFF)
 
     def teardown_method(self, method):
-        GPIO.output(self.trigger.pin, GPIO.LOW)
-        GPIO.cleanup()
+        self.trigger.off()
 
     def test_init(self):
         assert isinstance(self.trigger, Trigger)
