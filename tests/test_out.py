@@ -26,11 +26,11 @@ class TestOut:
         assert self.out.status == IO.OFF
 
 
-    def test_trigger(self):
+    def test_toggle(self):
         self.out.off()
 
-        self.out.trigger()
+        self.out.toggle()
         assert self.out.status == IO.ON
 
-        self.out.trigger()
+        self.out.toggle()
         assert self.out.status == IO.OFF

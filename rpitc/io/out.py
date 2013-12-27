@@ -27,5 +27,3 @@ class Out(object):
         else:
             self.off() 
 
-    def trigger(self):
-        self.toggle()
