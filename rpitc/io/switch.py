@@ -28,4 +28,4 @@ class Switch(object):
 
     def _trigger(self):
         for out in self.out:
-            out.trigger()
+            out.toggle()
