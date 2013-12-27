@@ -9,5 +9,3 @@ RPi.TC.egg-info/top_level.txt
 rpitc/__init__.py
 rpitc/io/__init__.py
 rpitc/io/out.py
-rpitc/tests/__init__.py
-rpitc/tests/out_test.py
