@@ -31,7 +31,8 @@ Control model railway with Raspberry PI""",
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          # -*- Extra requirements: -*-
+          "RPi.GPIO",
+          "fysom"
       ],
       entry_points="""
       # -*- Entry points: -*-
