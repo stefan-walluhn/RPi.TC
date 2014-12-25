@@ -1,4 +1,6 @@
 from fysom import Fysom
+from rpitc import PathCollision
+from rpitc.store import Store
 
 class Trail:
 
@@ -9,7 +11,9 @@ class Trail:
 
     _observers = []
     
-    def __init__(self):
+    def __init__(self, path=None):
+        self.path = path
+        self.store = Store()
         self._fsm = Fysom(
                 initial=Trail.IDLE,
                 events=[
@@ -21,7 +25,11 @@ class Trail:
                     ('resolve', Trail.REGISTERED, Trail.IDLE),
                     ('resolve', Trail.IDLE, Trail.IDLE)],
                 callbacks=[
-                    ('onidle', self._onidle),
+                    ('onidle', self._update),
+                    ('onregistered', self._registered),
+                    ('onhold', self._update),
+                    ('onactive', self._update),
+                    ('onbeforeresolve', self._onbeforeresolve),
                     ('onbeforeregister', self._onbeforeregister)])
 
     def subscribe(self, observer):
@@ -35,17 +43,25 @@ class Trail:
     def register(self):
         self._fsm.register()
 
+    def _onbeforeregister(self, e):
+        self.store.register(self)
+
+    def _registered(self, e):
+        self._update(e)
+        self.prepare()
+
+    def prepare(self):
+        self._fsm.prepare()
+
     def activate(self):
         self._fsm.activate()
 
     def resolve(self):
         self._fsm.resolve()
 
-    def _onbeforeregister(self, e):
+    def _onbeforeresolve(self, e):
+        self.store.unregister(self)
         return True
-
-    def _onidle(self, e):
-        self._update(e)
 
     def _update(self, e):
         for observer in self._observers:
