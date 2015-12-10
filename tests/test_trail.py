@@ -1,4 +1,4 @@
-from rpitc import PathCollision
+from rpitc import PathCollisionError
 from rpitc.element.turnout import Turnout
 from rpitc.trail import Trail, Event
 import fysom
@@ -22,7 +22,7 @@ class TestTrail:
         trail.register()
         path = [(turnout, Turnout.STRAIGHT), (Turnout(), Turnout.TURNOUT)]
         another_trail = Trail(path)
-        with pytest.raises(PathCollision) as e:
+        with pytest.raises(PathCollisionError) as e:
             another_trail.register()
 
     def test_unregister(self, trail):

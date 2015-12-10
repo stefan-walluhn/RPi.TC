@@ -1,4 +1,4 @@
-from rpitc import PathCollision
+from rpitc import PathCollisionError
 from rpitc.element.turnout import Turnout
 from rpitc.store import Store
 from rpitc.trail import Trail
@@ -34,7 +34,7 @@ class TestStore:
 
     def test_refuse_colliding_trail(self):
         trail = Trail(path=self.path2)
-        with pytest.raises(PathCollision) as e:
+        with pytest.raises(PathCollisionError) as e:
             self.store.register(trail)
         assert e.value.colliding_trail.path is self.path1
 

@@ -1,5 +1,4 @@
 from fysom import Fysom
-from rpitc import PathCollision
 from rpitc.store import Store
 
 class Trail:

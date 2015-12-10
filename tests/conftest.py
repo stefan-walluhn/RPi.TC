@@ -1,4 +1,5 @@
 from rpitc.adapter import Adapter
+from rpitc.section import Section
 from rpitc.element.turnout import Turnout
 from rpitc.io import IO
 from rpitc.trail import Trail, Event
@@ -46,6 +47,12 @@ def switch(gpio):
     switch = Switch(out, status=IO.OFF)
     yield switch
     out.off()
+
+
+@pytest.fixture(scope='function')
+def section():
+    sec = Mock()
+    return Section(next=sec, previous=sec)
 
 
 @pytest.fixture(scope='class')

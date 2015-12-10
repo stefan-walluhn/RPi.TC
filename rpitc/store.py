@@ -1,4 +1,4 @@
-from rpitc import PathCollision
+from rpitc import PathCollisionError
 import threading
 
 
@@ -25,7 +25,8 @@ class Store:
                 for stored_trail in self.trails:
                     for turnout in trail.path:
                         if turnout in stored_trail.path:
-                            raise PathCollision('path collision detected', stored_trail)
+                            raise PathCollisionError(
+                                'path collision detected', stored_trail)
                 self.trails.append(trail)
 
         def unregister(self, trail):

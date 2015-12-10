@@ -9,7 +9,7 @@ class TestTrigger:
         assert trigger.status == IO.ON
         assert trigger.out.status == IO.ON
 
-        time.sleep(trigger.delay + 0.1)
+        time.sleep(trigger.delay + 0.2)
         assert trigger.status == IO.ON
         assert trigger.out.status == IO.OFF
 
@@ -21,7 +21,7 @@ class TestTrigger:
         trigger.on()
         assert trigger.status == IO.ON
         assert trigger.out.status == IO.ON
-        time.sleep(trigger.delay + 0.1)
+        time.sleep(trigger.delay + 0.2)
         assert trigger.status == IO.ON
         assert trigger.out.status == IO.ON
 
@@ -33,6 +33,6 @@ class TestTrigger:
         trigger.off()
         assert trigger.status == IO.OFF
         assert trigger.out.status == IO.OFF
-        time.sleep(trigger.delay + 0.1)
+        time.sleep(trigger.delay + 0.2)
         assert trigger.status == IO.OFF
         assert trigger.out.status == IO.ON
