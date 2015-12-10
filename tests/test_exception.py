@@ -1,4 +1,4 @@
-from rpitc import PathCollisionError, SectionBlockedError
+from rpitc import PathCollisionError
 from rpitc.trail import Trail
 import pytest
 
@@ -10,8 +10,3 @@ class TestException:
         with pytest.raises(PathCollisionError) as e:
             raise PathCollisionError('path collision', trail)
         assert e.value.colliding_trail == trail
-
-    def test_blocktaken(self):
-        with pytest.raises(SectionBlockedError) as e:
-            raise SectionBlockedError('section is blocked')
-        assert e.errisinstance(SectionBlockedError)

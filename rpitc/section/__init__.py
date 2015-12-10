@@ -1,7 +1,7 @@
 from fysom import Fysom
 
 
-class Section:
+class Section(object):
 
     IDLE = 'idle'
     ARRIVING = 'arriving'
@@ -13,18 +13,22 @@ class Section:
         self.previous = previous
         self._fsm = Fysom(
             initial=Section.IDLE,
+            final=Section.IDLE,
             events=[
                 ('arrive', Section.IDLE, Section.ARRIVING),
                 ('wait', Section.ARRIVING, Section.WAITING),
+                ('depart', Section.ARRIVING, Section.DEPARTING),
                 ('depart', Section.WAITING, Section.DEPARTING),
-                ('resolve', Section.DEPARTING, Section.IDLE),
-                ('resolve', Section.IDLE, Section.IDLE)],
+                ('resolve', Section.DEPARTING, Section.IDLE)],
             callbacks=[
-                ('onleavedeparting', self._onleavedeparting),])
+                ('onwait', self._onwait),
+                ('ondeparting', self._ondeparting),
+                ('ondepart', self._ondepart),
+                ('onresolve', self._onresolve)])
 
     @property
     def blocked(self):
-        return not self._fsm.isstate(Section.IDLE)
+        return not self._fsm.is_finished()
 
     @property
     def status(self):
@@ -33,14 +37,29 @@ class Section:
     def arrive(self):
         self._fsm.arrive()
 
-    def wait(self):
+    def arrived(self):
+        if not self.next.blocked:
+            self._fsm.depart()
+            return
         self._fsm.wait()
 
     def depart(self):
-        self._fsm.depart()
+        # The section may be in idle or arriving state
+        if self._fsm.can('depart'):
+            self._fsm.depart()
 
-    def resolve(self):
+    def departed(self):
         self._fsm.resolve()
 
-    def _onleavedeparting(self, e):
+    def _onwait(self, e):
+        self.previous.departed()
+
+    def _ondepart(self, e):
+        if e.src == Section.ARRIVING:
+            self.previous.departed()
+
+    def _ondeparting(self, e):
+        self.next.arrive()
+
+    def _onresolve(self, e):
         self.previous.depart()
