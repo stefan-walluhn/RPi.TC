@@ -1,8 +1,9 @@
+from rpitc.io import IO
 import time
 
 class TestTrigger:
 
-    def test_trigger_on(self, trigger, IO):
+    def test_trigger_on(self, trigger):
         trigger.off()
         trigger.on()
         assert trigger.status == IO.ON
@@ -12,7 +13,7 @@ class TestTrigger:
         assert trigger.status == IO.ON
         assert trigger.out.status == IO.OFF
 
-    def test_trigger_not_on(self, out, IO):
+    def test_trigger_not_on(self, out):
         from rpitc.io.trigger import Trigger
         out.on()
         trigger = Trigger(out, status=IO.OFF, trigger_on=IO.OFF)
@@ -24,7 +25,7 @@ class TestTrigger:
         assert trigger.status == IO.ON
         assert trigger.out.status == IO.ON
 
-    def test_trigger_off(self, out, IO):
+    def test_trigger_off(self, out):
         from rpitc.io.trigger import Trigger
         out.on()
         trigger = Trigger(out, status=IO.ON, trigger_on=IO.OFF)

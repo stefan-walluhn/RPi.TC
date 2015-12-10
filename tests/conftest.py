@@ -1,5 +1,6 @@
 from rpitc.adapter import Adapter
 from rpitc.element.turnout import Turnout
+from rpitc.io import IO
 from rpitc.trail import Trail, Event
 import sys
 import imp
@@ -19,12 +20,6 @@ def gpio():
     return sys
 
 
-@pytest.fixture(scope='session')
-def IO(gpio):
-    from rpitc.io import IO
-    return IO
-
-
 @pytest.yield_fixture(scope='class')
 def out(gpio):
     from rpitc.io.out import Out
@@ -34,7 +29,7 @@ def out(gpio):
 
 
 @pytest.yield_fixture(scope='class')
-def trigger(IO):
+def trigger(gpio):
     from rpitc.io.out import Out
     from rpitc.io.trigger import Trigger
     out = Out(5)
@@ -44,7 +39,7 @@ def trigger(IO):
 
 
 @pytest.yield_fixture(scope='class')
-def switch(IO):
+def switch(gpio):
     from rpitc.io.out import Out
     from rpitc.io.switch import Switch
     out = Out(9)
