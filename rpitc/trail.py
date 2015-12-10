@@ -65,4 +65,13 @@ class Trail:
 
     def _update(self, e):
         for observer in self._observers:
-            observer.update(e.dst)
+            observer.update(Event(self, src=e.src, dst=e.dst))
+
+
+class Event:
+
+    def __init__(self, trail, src=None, dst=None):
+        self.trail = trail
+        self.src = src
+        self.dst = dst
+

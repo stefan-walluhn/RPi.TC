@@ -1,70 +1,53 @@
 from rpitc import PathCollision
 from rpitc.element.turnout import Turnout
-from rpitc.trail import Trail
+from rpitc.trail import Trail, Event
 import fysom
 import pytest
 
-class Observer:
-
-    def __init__(self):
-        self.status = None
-
-    def update(self, status):
-        self.status = status
-
 
 class TestTrail:
+    def test_status(self, trail):
+        assert trail.status == Trail.IDLE
 
-    turnout1 = Turnout()
-    turnout2 = Turnout()
-    turnout3 = Turnout()
-    turnout4 = Turnout()
-
-    path1 = [(turnout1, Turnout.STRAIGHT),
-             (turnout2, Turnout.TURNOUT),
-             (turnout3, Turnout.STRAIGHT)]
-    path2 = [(turnout1, Turnout.STRAIGHT),
-             (turnout4, Turnout.TURNOUT)]
-
-    trail = Trail(path=path1)
-
-    def setup_method(self, method):
-        self.observer = Observer()
-
-    def test_init(self):
-        assert isinstance(self.trail, Trail)
-
-    def test_status(self):
-        assert self.trail.status == Trail.IDLE
-
-    def test_exception_on_activate(self):
+    def test_exception_on_activate(self, trail):
         with pytest.raises(fysom.FysomError) as e:
-            self.trail.activate()
+            trail.activate()
         assert e.value.args[0] == 'event activate inappropriate in current state idle'
 
-    def test_register(self):
-        self.trail.register()
-        assert self.trail.status == Trail.HOLD
+    def test_register(self, trail):
+        trail.register()
+        assert trail.status == Trail.HOLD
 
-    def test_register_colliding(self):
-        another_trail = Trail(self.path2)
+    def test_register_colliding(self, turnout, trail):
+        trail.register()
+        path = [(turnout, Turnout.STRAIGHT), (Turnout(), Turnout.TURNOUT)]
+        another_trail = Trail(path)
         with pytest.raises(PathCollision) as e:
             another_trail.register()
 
-    def test_unregister(self):
-        self.trail.resolve()
-        assert self.trail.status == Trail.IDLE
-        self.trail.register()
-        assert self.trail.status == Trail.HOLD
+    def test_unregister(self, trail):
+        trail.resolve()
+        assert trail.status == Trail.IDLE
+        trail.register()
+        assert trail.status == Trail.HOLD
 
-    def test_add_observer(self):
-        self.trail.subscribe(self.observer)
-        assert self.trail._observers == [self.observer]
+    def test_add_observer(self, trail, observer):
+        trail.subscribe(observer)
+        assert trail._observers == [observer]
 
-    def test_callback_on_resolve(self):
-        self.trail.subscribe(self.observer)
-        self.trail.resolve()
-        self.trail.register()
-        self.trail.resolve()
-        assert self.observer.status == Trail.IDLE
+    def test_callback_on_resolve(self, trail, observer):
+        trail.subscribe(observer)
+        trail.resolve()
+        trail.register()
+        trail.resolve()
+        assert observer.status == Trail.IDLE
 
+
+class TestEvent:
+
+    def test_event(self):
+        trail = Trail()
+        e = Event(trail, src=Trail.IDLE, dst=Trail.REGISTERED)
+        assert e.trail == trail
+        assert e.src == Trail.IDLE
+        assert e.dst == Trail.REGISTERED

@@ -3,7 +3,7 @@ from collections import Iterable
 
 class Switch(object):
 
-    def __init__(self, out, status = IO.OFF):
+    def __init__(self, out, status=IO.OFF):
         if isinstance(out, Iterable):
             self.out = out
         else:

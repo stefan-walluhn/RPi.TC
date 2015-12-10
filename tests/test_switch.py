@@ -1,43 +1,30 @@
-from rpitc.io import IO
-from rpitc.io.out import Out
-from rpitc.io.trigger import Trigger
-from rpitc.io.switch import Switch
-
 class TestSwitch:
 
-    def setup_method(self, method):
-        self.out = Out(7, status=IO.OFF)
-        self.trigger = Trigger(5)
-        self.switch = Switch(self.out, status=IO.OFF)
+    def test_on(self, switch, IO):
+        switch.on()
+        for out in switch.out:
+            assert out.status == IO.ON
+        assert switch.status == IO.ON
 
-    def teardown_method(self, method):
-        self.out.off()
-        self.trigger.off()
+    def test_off(self, switch, IO):
+        switch.off()
+        for out in switch.out:
+            assert out.status == IO.OFF
+        assert switch.status == IO.OFF
 
-    def test_init(self):
-        assert isinstance(self.switch, Switch)
+    def test_toggle(self, switch, IO):
+        switch.off()
+        switch.toggle()
+        for out in switch.out:
+            assert out.status == IO.ON
+        assert switch.status == IO.ON
 
-    def test_on(self):
-        self.switch.on()
-        assert self.out.status == IO.ON
-        assert self.switch.status == IO.ON
-
-    def test_off(self):
-        self.switch.off()
-        assert self.out.status == IO.OFF
-        assert self.switch.status == IO.OFF
-
-    def test_toggle(self):
-        self.switch.off()
-        self.switch.toggle()
-        assert self.out.status == IO.ON
-        assert self.switch.status == IO.ON
-
-    def test_multiple_out(self):
-        self.out.off()
-        self.switch = Switch([self.out, self.trigger])
-        self.switch.toggle()
-        assert self.switch.status == IO.ON
-        assert self.out.status == IO.ON
-        assert self.trigger.status == IO.ON
+    def test_multiple_out(self, out, trigger, IO):
+        from rpitc.io.switch import Switch
+        out.off()
+        switch = Switch([out, trigger])
+        switch.toggle()
+        assert switch.status == IO.ON
+        assert out.status == IO.ON
+        assert trigger.status == IO.ON
 

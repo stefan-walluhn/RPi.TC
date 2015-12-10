@@ -8,4 +8,4 @@ class TestException:
         trail = Trail()
         with pytest.raises(PathCollision) as e:
             raise PathCollision('path collision', trail)
-        assert e.value.args[0] == 'path collision'
+        assert e.value.value == 'path collision'

@@ -8,6 +8,7 @@ RPi.TC.egg-info/
 *.egg
 *.egg-info
 .installed.cfg
+.cache
 __pycache__
 bin
 build
