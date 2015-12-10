@@ -25,13 +25,6 @@ def IO(gpio):
     return IO
 
 
-# XXX
-@pytest.fixture(scope='session')
-def Out(gpio):
-    from rpitc.io.out import Out
-    return Out
-
-
 @pytest.yield_fixture(scope='class')
 def out(gpio):
     from rpitc.io.out import Out
@@ -42,26 +35,22 @@ def out(gpio):
 
 @pytest.yield_fixture(scope='class')
 def trigger(IO):
+    from rpitc.io.out import Out
     from rpitc.io.trigger import Trigger
-    trigger = Trigger(7, delay=1, status=IO.OFF)
+    out = Out(5)
+    trigger = Trigger(out, delay=0.1, status=IO.OFF)
     yield trigger
-    trigger.out.off()
+    out.off()
 
 
-# XXX
 @pytest.yield_fixture(scope='class')
-def trigger2(IO):
-    from rpitc.io.trigger import Trigger
-    trigger = Trigger(5, status=IO.ON, trigger_on=IO.OFF)
-    yield trigger
-    trigger.out.off()
-
-
-@pytest.fixture(scope='class')
-def switch(out, IO):
+def switch(IO):
+    from rpitc.io.out import Out
     from rpitc.io.switch import Switch
+    out = Out(9)
     switch = Switch(out, status=IO.OFF)
-    return switch
+    yield switch
+    out.off()
 
 
 @pytest.fixture(scope='class')

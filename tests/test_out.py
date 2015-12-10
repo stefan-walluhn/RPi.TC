@@ -1,6 +1,7 @@
 class TestOut:
 
-    def test_init_on(self, Out, IO):
+    def test_init_on(self, IO):
+        from rpitc.io.out import Out
         out = Out(7, status=IO.ON)
         assert out.status == IO.ON
         out.off()

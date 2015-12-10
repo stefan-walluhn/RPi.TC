@@ -5,8 +5,8 @@ import time
 
 class Trigger(object):
 
-    def __init__(self, pin, status=IO.OFF, trigger_on=IO.ON, delay=0.2):
-        self.out = Out(pin, status) # XXX Trigger should get initialized with Out, not with Pin
+    def __init__(self, out, status=IO.OFF, trigger_on=IO.ON, delay=0.2):
+        self.out = out
         self.status = status
         self.trigger_on = trigger_on
         self.delay = delay

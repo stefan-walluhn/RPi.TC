@@ -27,4 +27,3 @@ class TestSwitch:
         assert switch.status == IO.ON
         assert out.status == IO.ON
         assert trigger.status == IO.ON
-
