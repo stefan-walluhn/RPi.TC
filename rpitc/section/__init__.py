@@ -4,6 +4,7 @@ from fysom import Fysom
 class Section(object):
 
     IDLE = 'idle'
+    AWAITING = 'awaiting'
     ARRIVING = 'arriving'
     WAITING = 'waiting'
     DEPARTING = 'departing'
@@ -15,24 +16,28 @@ class Section(object):
             initial=Section.IDLE,
             final=Section.IDLE,
             events=[
-                ('arrive', Section.IDLE, Section.ARRIVING),
+                ('await', Section.IDLE, Section.AWAITING),
+                ('arrive', Section.AWAITING, Section.ARRIVING),
                 ('wait', Section.ARRIVING, Section.WAITING),
                 ('depart', Section.ARRIVING, Section.DEPARTING),
                 ('depart', Section.WAITING, Section.DEPARTING),
                 ('resolve', Section.DEPARTING, Section.IDLE)],
             callbacks=[
+                ('onawait', self._onawait),
+                ('onarrive', self._onarrive),
                 ('onwait', self._onwait),
-                ('ondeparting', self._ondeparting),
-                ('ondepart', self._ondepart),
-                ('onresolve', self._onresolve)])
+                ('ondepart', self._ondepart)])
 
     @property
     def blocked(self):
-        return not self._fsm.is_finished()
+        return self.status is not Section.AWAITING
 
     @property
     def status(self):
         return self._fsm.current
+
+    def await(self):
+        self._fsm.await()
 
     def arrive(self):
         self._fsm.arrive()
@@ -44,12 +49,30 @@ class Section(object):
         self._fsm.wait()
 
     def depart(self):
-        # The section may be in idle or arriving state
-        if self._fsm.can('depart'):
+        # The section may be in awaiting or arriving state
+        if self.status == Section.WAITING:
             self._fsm.depart()
 
     def departed(self):
         self._fsm.resolve()
+
+    def _onawait(self, e):
+        self.previous.depart()
+
+    def _onarrive(self, e):
+        self.previous.departed()
+
+    def _onwait(self, e):
+        pass
+
+    def _ondepart(self, e):
+        pass
+
+
+class FooSection(Section):
+
+    def _onarrive(self, e):
+        pass
 
     def _onwait(self, e):
         self.previous.departed()
@@ -58,8 +81,3 @@ class Section(object):
         if e.src == Section.ARRIVING:
             self.previous.departed()
 
-    def _ondeparting(self, e):
-        self.next.arrive()
-
-    def _onresolve(self, e):
-        self.previous.depart()
