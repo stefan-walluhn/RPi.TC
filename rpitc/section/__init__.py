@@ -1,4 +1,4 @@
-from fysom import Fysom
+from fysom import Fysom, Canceled
 
 
 class Section(object):
@@ -9,9 +9,10 @@ class Section(object):
     WAITING = 'waiting'
     DEPARTING = 'departing'
 
-    def __init__(self, next, previous):
-        self.next = next
+    def __init__(self, previous, auto_await=False):
         self.previous = previous
+        self._auto_await = auto_await
+        self._can_depart = False
         self._fsm = Fysom(
             initial=Section.IDLE,
             final=Section.IDLE,
@@ -26,7 +27,12 @@ class Section(object):
                 ('onawait', self._onawait),
                 ('onarrive', self._onarrive),
                 ('onwait', self._onwait),
-                ('ondepart', self._ondepart)])
+                ('onbeforedepart', self._onbeforedepart),
+                ('ondepart', self.__ondepart),
+                ('onresolve', self._onresolve)])
+
+        if self._auto_await:
+            self._fsm.await()
 
     @property
     def blocked(self):
@@ -43,12 +49,13 @@ class Section(object):
         self._fsm.arrive()
 
     def arrived(self):
-        if not self.next.blocked:
+        try:
             self._fsm.depart()
-            return
-        self._fsm.wait()
+        except Canceled:
+            self._fsm.wait()
 
     def depart(self):
+        self._can_depart = True
         # The section may be in awaiting or arriving state
         if self.status == Section.WAITING:
             self._fsm.depart()
@@ -65,11 +72,22 @@ class Section(object):
     def _onwait(self, e):
         pass
 
+    def _onbeforedepart(self, e):
+        return self._can_depart
+
+    def __ondepart(self, e):
+        self._can_depart = False
+        self._ondepart(e)
+
     def _ondepart(self, e):
         pass
 
+    def _onresolve(self, e):
+        if self._auto_await:
+            self._fsm.await()
 
-class FooSection(Section):
+
+class BareSection(Section):
 
     def _onarrive(self, e):
         pass
@@ -80,4 +98,3 @@ class FooSection(Section):
     def _ondepart(self, e):
         if e.src == Section.ARRIVING:
             self.previous.departed()
-
