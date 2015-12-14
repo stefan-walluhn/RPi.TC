@@ -10,7 +10,7 @@ class Section(object):
     DEPARTING = 'departing'
 
     def __init__(self, previous, auto_await=False):
-        self.previous = previous
+        self._previous = previous
         self._auto_await = auto_await
         self._can_depart = False
         self._fsm = Fysom(
@@ -28,7 +28,7 @@ class Section(object):
                 ('onarrive', self._onarrive),
                 ('onwait', self._onwait),
                 ('onbeforedepart', self._onbeforedepart),
-                ('ondepart', self.__ondepart),
+                ('ondepart', self.__ondepart__),
                 ('onresolve', self._onresolve)])
 
         if self._auto_await:
@@ -37,6 +37,10 @@ class Section(object):
     @property
     def blocked(self):
         return self.status is not Section.AWAITING
+
+    @property
+    def can_depart(self):
+        return self._can_depart
 
     @property
     def status(self):
@@ -64,18 +68,18 @@ class Section(object):
         self._fsm.resolve()
 
     def _onawait(self, e):
-        self.previous.depart()
+        self._previous.depart()
 
     def _onarrive(self, e):
-        self.previous.departed()
+        self._previous.departed()
 
     def _onwait(self, e):
         pass
 
     def _onbeforedepart(self, e):
-        return self._can_depart
+        return self.can_depart
 
-    def __ondepart(self, e):
+    def __ondepart__(self, e):
         self._can_depart = False
         self._ondepart(e)
 
@@ -89,12 +93,9 @@ class Section(object):
 
 class BareSection(Section):
 
-    def _onarrive(self, e):
-        pass
+    def arrive(self):
+        raise NotImplementedError
 
-    def _onwait(self, e):
-        self.previous.departed()
-
-    def _ondepart(self, e):
-        if e.src == Section.ARRIVING:
-            self.previous.departed()
+    def arrived(self):
+        super(BareSection, self).arrive()
+        super(BareSection, self).arrived()

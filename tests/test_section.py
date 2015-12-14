@@ -81,30 +81,30 @@ class TestSection:
     def test_onarrive(self, section):
         section.await()
         section.arrive()
-        section.previous.departed.assert_called_once_with()
+        section._previous.departed.assert_called_once_with()
 
     def test_ondepart(self, section):
         section.await()
         section.arrive()
         section.arrived()
         section.depart()
-        assert not section._can_depart
+        assert not section.can_depart
 
     def test_ondeparted(self, section):
         section.await()
-        section.previous.depart.assert_called_once_with()
+        section._previous.depart.assert_called_once_with()
         section.arrive()
         section.arrived()
         section.depart()
         section.departed()
-        section.previous.depart.assert_not_called()
+        section._previous.depart.assert_not_called()
 
     def test_ondeparted_previous_idle_does_not_raise(self, section):
-        section.previous = Section(previous=Mock())
+        section._previous = Section(previous=Mock())
         section.await()
-        section.previous.await()
-        section.previous.arrive()
-        section.previous.arrived()
+        section._previous.await()
+        section._previous.arrive()
+        section._previous.arrived()
         section.arrive()
         section.arrived()
         section.depart()
@@ -127,27 +127,12 @@ class TestSection:
 
 
 class TestBareSection:
-    def test_onarrive(self, bare_section):
+    def test_no_arrive(self, bare_section):
         bare_section.await()
-        bare_section.arrive()
-        bare_section.previous.departed.assert_not_called()
+        with pytest.raises(NotImplementedError):
+            bare_section.arrive()
 
     def test_onwait(self, bare_section):
         bare_section.await()
-        bare_section.arrive()
         bare_section.arrived()
-        bare_section.previous.departed.assert_called_once_with()
-
-    def test_ondepart(self, bare_section):
-        bare_section.await()
-        bare_section.arrive()
-        bare_section.arrived()
-        bare_section.depart()
-        bare_section.previous.departed.assert_called_once_with()
-
-    def test_ondepart_next_not_blocked(self, bare_section):
-        bare_section._can_depart = True
-        bare_section.await()
-        bare_section.arrive()
-        bare_section.arrived()
-        bare_section.previous.departed.assert_called_once_with()
+        bare_section._previous.departed.assert_called_once_with()
