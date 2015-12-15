@@ -99,3 +99,13 @@ class BareSection(Section):
     def arrived(self):
         super(BareSection, self).arrive()
         super(BareSection, self).arrived()
+
+
+class ClassicSection(Section):
+
+    def arrive(self):
+        super(ClassicSection, self).arrive()
+        super(ClassicSection, self).arrived()
+
+    def arrived(self):
+        raise NotImplementedError

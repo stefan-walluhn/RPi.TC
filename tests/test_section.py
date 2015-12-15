@@ -1,4 +1,4 @@
-from rpitc.section import Section, BareSection
+from rpitc.section import Section, BareSection, ClassicSection
 import fysom
 import pytest
 try:
@@ -9,14 +9,17 @@ except ImportError:
 
 @pytest.fixture(scope='function')
 def auto_await_section():
-    m_sec = Mock()
-    return Section(previous=m_sec, auto_await=True)
+    return Section(previous=Mock(), auto_await=True)
 
 
 @pytest.fixture(scope='function')
 def bare_section():
-    m_sec = Mock()
-    return BareSection(previous=m_sec)
+    return BareSection(previous=Mock())
+
+
+@pytest.fixture(scope='function')
+def classic_section():
+    return ClassicSection(previous=Mock())
 
 
 class TestSection:
@@ -128,12 +131,26 @@ class TestSection:
 
 
 class TestBareSection:
-    def test_no_arrive(self, bare_section):
+    def test_arrive(self, bare_section):
         bare_section.await()
         with pytest.raises(NotImplementedError):
             bare_section.arrive()
 
-    def test_onwait(self, bare_section):
+    def test_arrived(self, bare_section):
         bare_section.await()
         bare_section.arrived()
         bare_section._previous.departed.assert_called_once_with()
+
+
+class TestClassicSection:
+    def test_arrive(self, classic_section):
+        classic_section.await()
+        classic_section.arrive()
+        classic_section._previous.departed.assert_called_once_with()
+        assert classic_section.status == Section.WAITING
+
+    def test_arrived(self, classic_section):
+        classic_section.await()
+        classic_section.arrive()
+        with pytest.raises(NotImplementedError):
+            classic_section.arrived()

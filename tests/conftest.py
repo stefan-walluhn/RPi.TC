@@ -51,8 +51,7 @@ def switch(gpio):
 
 @pytest.fixture(scope='function')
 def section():
-    m_sec = Mock()
-    return Section(previous=m_sec)
+    return Section(previous=Mock())
 
 
 @pytest.fixture(scope='class')
