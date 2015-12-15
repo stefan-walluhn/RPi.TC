@@ -1,6 +1,6 @@
-from rpitc import PathCollisionError
+from rpitc.exceptions import PathCollisionError
 from rpitc.element.turnout import Turnout
-from rpitc.trail import Trail, Event
+from rpitc.station.trail import Trail, Event
 import fysom
 import pytest
 

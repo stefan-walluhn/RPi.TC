@@ -1,7 +1,7 @@
-from rpitc import PathCollisionError
+from rpitc.exceptions import PathCollisionError
 from rpitc.element.turnout import Turnout
 from rpitc.store import Store
-from rpitc.trail import Trail
+from rpitc.station.trail import Trail
 import pytest
 
 class TestStore:

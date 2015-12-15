@@ -2,7 +2,8 @@ from rpitc.adapter import Adapter
 from rpitc.section import Section
 from rpitc.element.turnout import Turnout
 from rpitc.io import IO
-from rpitc.trail import Trail, Event
+from rpitc.station.gateway import Entrance, Exit
+from rpitc.station.trail import Trail, Event
 import sys
 import imp
 import pytest
@@ -52,6 +53,16 @@ def switch(gpio):
 @pytest.fixture(scope='function')
 def section(out):
     return Section(out=out, previous=Mock())
+
+
+@pytest.fixture(scope='function')
+def entrance():
+    return Entrance(previous=Mock())
+
+
+@pytest.fixture(scope='function')
+def exit():
+    return Exit()
 
 
 @pytest.fixture(scope='class')

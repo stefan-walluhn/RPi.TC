@@ -1,5 +1,5 @@
-from rpitc import PathCollisionError
-from rpitc.trail import Trail
+from rpitc.exceptions import PathCollisionError
+from rpitc.station.trail import Trail
 import pytest
 
 

@@ -1,5 +1,5 @@
 from rpitc.adapter.logger import Logger
-from rpitc.trail import Trail, Event
+from rpitc.station.trail import Trail, Event
 
 class TestLogger:
 

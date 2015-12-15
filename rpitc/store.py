@@ -1,4 +1,4 @@
-from rpitc import PathCollisionError
+from rpitc.exceptions import PathCollisionError
 import threading
 
 
