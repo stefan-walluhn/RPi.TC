@@ -8,6 +8,9 @@ class TestOut:
         assert out.status == IO.ON
         out.off()
 
+    def test_set_pin(self, out):
+        assert out.set_pin(IO.ON) == IO.ON
+
     def test_on(self, out):
         out.on()
         assert out.status == IO.ON

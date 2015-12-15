@@ -1,25 +1,28 @@
 from rpitc.io import IO
 import RPi.GPIO as GPIO
 
+
 class Out(object):
-    status = IO.OFF
-    pin = 0
 
     def __init__(self, pin, status=IO.OFF):
-        self.pin = pin
-        self.status = status
+        self.__pin__ = pin
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.pin, GPIO.OUT)
-        if status==IO.ON:
-            self.on()
+        GPIO.setup(self.__pin__, GPIO.OUT)
+        self._status = self.set_pin(status)
+
+    @property
+    def status(self):
+        return self._status
+
+    def set_pin(self, status):
+        GPIO.output(self.__pin__, status)
+        return status
 
     def on(self):
-        self.status = IO.ON
-        GPIO.output(self.pin, IO.ON)
+        self._status = self.set_pin(IO.ON)
 
     def off(self):
-        self.status = IO.OFF
-        GPIO.output(self.pin, IO.OFF)
+        self._status = self.set_pin(IO.OFF)
 
     def toggle(self):
         if self.status==IO.OFF:
