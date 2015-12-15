@@ -9,7 +9,8 @@ class Section(object):
     WAITING = 'waiting'
     DEPARTING = 'departing'
 
-    def __init__(self, previous, auto_await=False):
+    def __init__(self, out, previous, auto_await=False):
+        self._out = out
         self._previous = previous
         self._auto_await = auto_await
         self._can_depart = False
@@ -24,11 +25,16 @@ class Section(object):
                 ('depart', Section.WAITING, Section.DEPARTING),
                 ('resolve', Section.DEPARTING, Section.IDLE)],
             callbacks=[
+                ('onawaiting', self._onawaiting),
                 ('onawait', self._onawait),
                 ('onarrive', self._onarrive),
+                ('onwaiting', self._onwaiting),
                 ('onwait', self._onwait),
+                ('onleavewaiting', self._onleavewaiting),
                 ('onbeforedepart', self._onbeforedepart),
+                ('ondeparting', self._ondeparting),
                 ('ondepart', self.__ondepart__),
+                ('onleavedeparting', self._onleavedeparting),
                 ('onresolve', self._onresolve)])
 
         if self._auto_await:
@@ -67,17 +73,29 @@ class Section(object):
     def departed(self):
         self._fsm.resolve()
 
+    def _onawaiting(self, e):
+        self._out.on()
+
     def _onawait(self, e):
         self._previous.depart()
 
     def _onarrive(self, e):
         self._previous.departed()
 
+    def _onwaiting(self, e):
+        self._out.off()
+
     def _onwait(self, e):
         pass
 
+    def _onleavewaiting(self, e):
+        self._out.on()
+
     def _onbeforedepart(self, e):
         return self.can_depart
+
+    def _ondeparting(self, e):
+        pass
 
     def __ondepart__(self, e):
         self._can_depart = False
@@ -85,6 +103,9 @@ class Section(object):
 
     def _ondepart(self, e):
         pass
+
+    def _onleavedeparting(self, e):
+        self._out.off()
 
     def _onresolve(self, e):
         if self._auto_await:
@@ -109,3 +130,15 @@ class ClassicSection(Section):
 
     def arrived(self):
         raise NotImplementedError
+
+    def _onawaiting(self, e):
+        pass
+
+    def _onwaiting(self, e):
+        pass
+
+    def _onleavewaiting(self, e):
+        pass
+
+    def _ondeparting(self, e):
+        self._out.on()
