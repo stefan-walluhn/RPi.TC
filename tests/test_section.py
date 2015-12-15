@@ -93,6 +93,7 @@ class TestSection:
     def test_ondeparted(self, section):
         section.await()
         section._previous.depart.assert_called_once_with()
+        section._previous.depart.reset_mock()
         section.arrive()
         section.arrived()
         section.depart()
