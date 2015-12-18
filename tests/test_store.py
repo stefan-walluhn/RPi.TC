@@ -1,44 +1,26 @@
 from rpitc.exceptions import PathCollisionError
-from rpitc.element.turnout import Turnout
 from rpitc.store import Store
-from rpitc.station.trail import Trail
 import pytest
+
 
 class TestStore:
 
-    turnout1 = Turnout()
-    turnout2 = Turnout()
-    turnout3 = Turnout()
-    turnout4 = Turnout()
-
-    path1 = [(turnout1, Turnout.STRAIGHT),
-             (turnout2, Turnout.TURNOUT),
-             (turnout3, Turnout.STRAIGHT)]
-    path2 = [(turnout1, Turnout.STRAIGHT),
-             (turnout4, Turnout.TURNOUT)]
-
-    trail = Trail(path=path1)
-
-    store = Store()
-
-    def test_init(self):
-        assert isinstance(self.store, Store)
-
-    def test_singleton(self):
+    def test_singleton(self, store):
         another_store = Store()
-        assert self.store.instance is another_store.instance
+        assert store is another_store
 
-    def test_register(self):
-        self.store.register(self.trail)
-        assert self.store.trails == [self.trail]
+    def test_register(self, store, trail):
+        store.register(trail.path)
+        assert store._paths == [trail.path]
 
-    def test_refuse_colliding_trail(self):
-        trail = Trail(path=self.path2)
+    def test_refuse_colliding_trail(self, store, trail):
+        store.register(trail.path)
         with pytest.raises(PathCollisionError) as e:
-            self.store.register(trail)
-        assert e.value.colliding_trail.path is self.path1
+            store.register(trail.path)
+        assert e.value.colliding_path is trail.path
 
-    def test_unregister(self):
-        self.store.unregister(self.trail)
-        assert self.store.trails == []
+    def test_unregister(self, store, trail):
+        store.register(trail.path)
+        store.unregister(trail.path)
+        assert store._paths == []
 

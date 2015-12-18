@@ -1,8 +1,10 @@
+from fysom import FysomError
 from rpitc.adapter import Adapter
 from rpitc.element.turnout import Turnout
 from rpitc.io import IO
 from rpitc.station.gateway import Entrance, Exit
-from rpitc.station.trail import Trail, Event
+from rpitc.station.trail import Trail
+from rpitc.store import Store
 import sys
 import imp
 import pytest
@@ -62,17 +64,14 @@ def trail(turnout):
         (Turnout(), Turnout.STRAIGHT)]
     trail = Trail(path=path)
     yield trail
-    trail.resolve()
+    try:
+        trail.resolve()
+    except FysomError:
+        if trail.status is Trail.IDLE: pass
 
-
-@pytest.fixture(scope='session')
-def observer():
-    class Observer(Adapter):
-
-        def __init__(self):
-            self.status = None
-
-        def update(self, event):
-            self.status = event.dst
-
-    return Observer()
+@pytest.yield_fixture(scope='function')
+def store():
+    store = Store()
+    yield store
+    for path in store._paths:
+        store.unregister(path)

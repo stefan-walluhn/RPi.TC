@@ -1,6 +1,6 @@
 from rpitc.exceptions import PathCollisionError
 from rpitc.element.turnout import Turnout
-from rpitc.station.trail import Trail, Event
+from rpitc.station.trail import Trail
 import fysom
 import pytest
 
@@ -10,9 +10,8 @@ class TestTrail:
         assert trail.status == Trail.IDLE
 
     def test_exception_on_activate(self, trail):
-        with pytest.raises(fysom.FysomError) as e:
+        with pytest.raises(fysom.FysomError):
             trail.activate()
-        assert e.value.args[0] == 'event activate inappropriate in current state idle'
 
     def test_register(self, trail):
         trail.register()
@@ -22,32 +21,21 @@ class TestTrail:
         trail.register()
         path = [(turnout, Turnout.STRAIGHT), (Turnout(), Turnout.TURNOUT)]
         another_trail = Trail(path)
-        with pytest.raises(PathCollisionError) as e:
+        with pytest.raises(PathCollisionError):
             another_trail.register()
 
-    def test_unregister(self, trail):
+    def test_activate(self, trail):
+        trail.register()
+        trail.activate()
+        assert trail.status == Trail.ACTIVE
+
+    def test_resolve(self, trail):
+        trail.register()
         trail.resolve()
         assert trail.status == Trail.IDLE
+
+    def test_unregister_on_resolve(self, trail):
+        trail.register()
+        trail.resolve()
         trail.register()
         assert trail.status == Trail.HOLD
-
-    def test_add_observer(self, trail, observer):
-        trail.subscribe(observer)
-        assert trail._observers == [observer]
-
-    def test_callback_on_resolve(self, trail, observer):
-        trail.subscribe(observer)
-        trail.resolve()
-        trail.register()
-        trail.resolve()
-        assert observer.status == Trail.IDLE
-
-
-class TestEvent:
-
-    def test_event(self):
-        trail = Trail()
-        e = Event(trail, src=Trail.IDLE, dst=Trail.REGISTERED)
-        assert e.trail == trail
-        assert e.src == Trail.IDLE
-        assert e.dst == Trail.REGISTERED
