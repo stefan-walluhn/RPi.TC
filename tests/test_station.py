@@ -2,15 +2,11 @@ from rpitc.section import Section
 from rpitc.station.gateway import Entrance, BareEntrance
 import fysom
 import pytest
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
 
 
 @pytest.fixture(scope='function')
-def bare_entrance():
-    return BareEntrance(previous=Mock())
+def bare_entrance(mock):
+    return BareEntrance(previous=mock())
 
 
 class TestBareEntrance:

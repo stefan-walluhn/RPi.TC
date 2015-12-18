@@ -8,16 +8,21 @@ from rpitc.store import Store
 import sys
 import imp
 import pytest
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
 
 
 @pytest.fixture(scope='session')
-def gpio():
+def mock():
+    try:
+        from unittest.mock import Mock
+    except ImportError:
+        from mock import Mock
+    return Mock
+
+
+@pytest.fixture(scope='session')
+def gpio(mock):
     rpi = imp.new_module("rpi")
-    rpi.GPIO = Mock()
+    rpi.GPIO = mock()
     sys.modules['RPi'] = rpi
     sys.modules['RPi.GPIO'] = imp.new_module("gpio")
     return sys

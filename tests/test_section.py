@@ -11,20 +11,20 @@ from rpitc.section.block import (
     ClassicBlockSection)
 import fysom
 import pytest
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
 
 
 @pytest.fixture(scope='function')
-def base_entrance_section():
-    return BaseEntranceSection(previous=Mock())
+def previous(mock):
+    return mock()
+
+@pytest.fixture(scope='function')
+def base_entrance_section(previous):
+    return BaseEntranceSection(previous=previous)
 
 
 @pytest.fixture(scope='function')
-def bare_entrance_section():
-    return BareEntranceSection(previous=Mock())
+def bare_entrance_section(previous):
+    return BareEntranceSection(previous=previous)
 
 
 @pytest.fixture(scope='function')
@@ -33,30 +33,30 @@ def base_exit_section():
 
 
 @pytest.fixture(scope='function')
-def base_block_section():
-    return BaseBlockSection(previous=Mock())
+def base_block_section(previous):
+    return BaseBlockSection(previous=previous)
 
 
 @pytest.fixture(scope='function')
-def auto_await_block_section(out):
-    return BaseBlockSection(previous=Mock(), auto_await=True)
+def auto_await_block_section(previous, out):
+    return BaseBlockSection(previous=previous, auto_await=True)
 
 
 @pytest.yield_fixture(scope='function')
-def block_section(out):
-    yield BlockSection(out=out, previous=Mock())
+def block_section(previous, out):
+    yield BlockSection(out=out, previous=previous)
     out.off()
 
 
 @pytest.yield_fixture(scope='function')
-def bare_section(out):
-    yield BareBlockSection(out=out, previous=Mock())
+def bare_section(previous, out):
+    yield BareBlockSection(out=out, previous=previous)
     out.off()
 
 
 @pytest.yield_fixture(scope='function')
-def classic_section(out):
-    yield ClassicBlockSection(out=out, previous=Mock())
+def classic_section(previous, out):
+    yield ClassicBlockSection(out=out, previous=previous)
     out.off()
 
 
