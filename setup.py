@@ -32,6 +32,7 @@ Control model railway with Raspberry PI""",
       zip_safe=False,
       install_requires=[
           "RPi.GPIO",
+          "future",
           "fysom",
           "pika",
           "mock"

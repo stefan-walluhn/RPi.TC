@@ -1,31 +1,26 @@
-from rpitc.io import IO
+from rpitc.io import IO, BaseOut
 from collections import Iterable
 
-class Switch(object):
+
+class Switch(BaseOut):
 
     def __init__(self, out, status=IO.OFF):
         if isinstance(out, Iterable):
-            self.out = out
+            self._out = out
         else:
-            self.out = [out]
-        self.status = status
+            self._out = [out]
+        super(Switch, self).__init__(status)
 
-    def on(self):
+    def _on(self):
         if self.status==IO.OFF:
-            self.status = IO.ON
-            self._trigger()
+            self._toggle_all()
+        return super(Switch, self)._on()
 
-    def off(self):
+    def _off(self):
         if self.status==IO.ON:
-            self.status = IO.OFF
-            self._trigger()
+            self._toggle_all()
+        return super(Switch, self)._off()
 
-    def toggle(self):
-        if self.status==IO.OFF:
-            self.on()
-        else:
-            self.off()
-
-    def _trigger(self):
-        for out in self.out:
+    def _toggle_all(self):
+        for out in self._out:
             out.toggle()

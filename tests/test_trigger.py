@@ -4,8 +4,8 @@ import time
 class TestTrigger:
 
     def test_trigger_on(self, trigger):
-        trigger.off()
         trigger.on()
+        time.sleep(0.1)
         assert trigger.status == IO.ON
         assert trigger.out.status == IO.ON
 
@@ -31,6 +31,7 @@ class TestTrigger:
         trigger = Trigger(out, status=IO.ON, trigger_on=IO.OFF)
 
         trigger.off()
+        time.sleep(0.1)
         assert trigger.status == IO.OFF
         assert trigger.out.status == IO.OFF
         time.sleep(trigger.delay + 0.2)

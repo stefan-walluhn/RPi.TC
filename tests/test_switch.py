@@ -5,20 +5,20 @@ class TestSwitch:
 
     def test_on(self, switch):
         switch.on()
-        for out in switch.out:
+        for out in switch._out:
             assert out.status == IO.ON
         assert switch.status == IO.ON
 
     def test_off(self, switch):
         switch.off()
-        for out in switch.out:
+        for out in switch._out:
             assert out.status == IO.OFF
         assert switch.status == IO.OFF
 
     def test_toggle(self, switch):
         switch.off()
         switch.toggle()
-        for out in switch.out:
+        for out in switch._out:
             assert out.status == IO.ON
         assert switch.status == IO.ON
 

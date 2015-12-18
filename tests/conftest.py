@@ -34,7 +34,7 @@ def trigger(gpio):
     from rpitc.io.out import Out
     from rpitc.io.trigger import Trigger
     out = Out(5)
-    trigger = Trigger(out, delay=0.1, status=IO.OFF)
+    trigger = Trigger(out)
     yield trigger
     out.off()
 
