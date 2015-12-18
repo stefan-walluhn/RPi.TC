@@ -29,6 +29,9 @@ class Trail:
     def status(self):
         return self._fsm.current
 
+    def onchangestate(self, on_change):
+        self._fsm.onchangestate = on_change
+
     def register(self):
         self._fsm.register()
 
@@ -50,3 +53,18 @@ class Trail:
     def _onidle(self, e):
         if e.src is not "none":
             self.store.unregister(self.path)
+
+
+class TrailObserver(object):
+
+    def __init__(self, trail):
+        self._adapter = []
+        self._trail = trail
+        self._trail.onchangestate(self.on_change)
+
+    def register_adapter(self, adapter):
+        self._adapter.append(adapter)
+
+    def on_change(self, e):
+        for adapter in self._adapter:
+            adapter.publish(e.event)

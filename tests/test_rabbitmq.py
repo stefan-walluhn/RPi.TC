@@ -1,14 +1,27 @@
-#from rpitc.adapter.rabbitmq import RabbitMQ
-#from rpitc.trail import Trail, Event
-#
-#class TestRabbitMQ:
-#
-#    rabbit = RabbitMQ()
-#
-#    def test_init(self):
-#        assert isinstance(self.rabbit, RabbitMQ)
-#
-#    def test_logging(self):
-#        trail = Trail()
-#        e = Event(trail, src=Trail.IDLE, dst=Trail.ACTIVE)
-#        self.rabbit.update(e)
+from rpitc.adapter.rabbitmq import RabbitMQAdapter
+import pika
+import pytest
+
+
+@pytest.fixture(scope='session')
+def rabbit_connection(mock):
+    channel = mock()
+    channel.basic_publish = mock()
+
+    connection = mock
+    connection.channel = mock(return_value=channel)
+
+    pika.BlockingConnection = connection
+
+
+@pytest.fixture(scope='session')
+def rabbit_adapter(rabbit_connection):
+    return RabbitMQAdapter()
+
+
+class TestRabbitMQAdapter:
+
+    def test_publish(self, rabbit_adapter):
+        rabbit_adapter.publish('foo')
+        rabbit_adapter.channel.basic_publish.assert_called_once_with(
+            body='foo', routing_key='status', exchange='')

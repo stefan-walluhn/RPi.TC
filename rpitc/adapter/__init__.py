@@ -1,9 +1,4 @@
-from abc import ABCMeta, abstractmethod
+class Adapter(object):
 
-
-class Adapter:
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def update(self, event):
-        pass
+    def publish(self, message):
+        print(message)
