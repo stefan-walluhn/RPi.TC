@@ -17,7 +17,8 @@ def implementation():
 
 @pytest.fixture
 def base_out(io_status, implementation):
-    class BaseOutImpl(implementation, BaseOut): pass
+    class BaseOutImpl(implementation, BaseOut):
+        pass
     return BaseOutImpl(status=io_status)
 
 
@@ -53,12 +54,18 @@ class TestIO:
 
     def test_base_out_abstract_on(self, implementation):
         del implementation._on
-        class BaseOutWithoutOn(implementation, BaseOut): pass
+
+        class BaseOutWithoutOn(implementation, BaseOut):
+            pass
+
         with pytest.raises(TypeError):
             BaseOutWithoutOn()
 
     def test_base_out_abstract_off(self, implementation):
         del implementation._off
-        class BaseOutWithoutOff(implementation, BaseOut): pass
+
+        class BaseOutWithoutOff(implementation, BaseOut):
+            pass
+
         with pytest.raises(TypeError):
             BaseOutWithoutOff()

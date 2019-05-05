@@ -1,8 +1,6 @@
 from fysom import FysomError
-from rpitc.adapter import Adapter
 from rpitc.element.turnout import Turnout
 from rpitc.io import IO
-from rpitc.station.gateway import Entrance, Exit
 from rpitc.station.trail import Trail
 from rpitc.store import Store
 import sys
@@ -72,7 +70,9 @@ def trail(turnout):
     try:
         trail.resolve()
     except FysomError:
-        if trail.status is Trail.IDLE: pass
+        if trail.status is Trail.IDLE:
+            pass
+
 
 @pytest.yield_fixture(scope='function')
 def store():

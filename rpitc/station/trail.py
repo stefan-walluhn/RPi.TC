@@ -1,5 +1,9 @@
+import logging
 from fysom import Fysom
 from rpitc.store import Store
+
+
+logger = logging.getLogger(__name__)
 
 
 class Trail:
@@ -33,15 +37,19 @@ class Trail:
         self._fsm.onchangestate = on_change
 
     def register(self):
+        logger.debug('register {}'.format(self))
         self._fsm.register()
 
     def prepare(self):
+        logger.debug('prepare {}'.format(self))
         self._fsm.prepare()
 
     def activate(self):
+        logger.debug('activate {}'.format(self))
         self._fsm.activate()
 
     def resolve(self):
+        logger.debug('resolve {}'.format(self))
         self._fsm.resolve()
 
     def _onbeforeregister(self, e):

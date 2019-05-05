@@ -1,16 +1,4 @@
-from setuptools import setup, find_packages, Command
-import sys, os
-
-class PyTest(Command):
-    user_options = []
-    def initialize_options(self):
-        pass
-    def finalize_options(self):
-        pass
-    def run(self):
-        import sys,subprocess
-        errno = subprocess.call([sys.executable, 'runtests.py'])
-        raise SystemExit(errno)
+from setuptools import setup, find_packages
 
 
 version = '0.1'
@@ -21,7 +9,6 @@ setup(name='RPi.TC',
       long_description="""\
 Control model railway with Raspberry PI""",
       classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-      cmdclass = {'test':PyTest},
       keywords='model railway raspberry pi',
       author='Stefan',
       author_email='stefan@terminal21.de',
@@ -31,13 +18,25 @@ Control model railway with Raspberry PI""",
       include_package_data=True,
       zip_safe=False,
       install_requires=[
+          "Click",
           "RPi.GPIO",
           "future",
           "fysom",
+          "mock",
           "pika",
-          "mock"
+          "protobuf",
+          "pytest-runner",
+          "pyyaml",
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
-      )
+      tests_require=[
+          "pytest",
+          "pytest-datadir",
+          "pytest-flake8",
+      ],
+      entry_points={
+          'console_scripts': [
+              'rptc_listener = rpitc.cli.listener:listen',
+              'rptc_request_trail = rpitc.cli.request:trail',
+          ],
+      },
+)

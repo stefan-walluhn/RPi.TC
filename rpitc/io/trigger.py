@@ -3,9 +3,12 @@ from rpitc.io.out import Out, BaseOut
 from threading import Thread
 import time
 
+
 class Trigger(BaseOut):
 
-    def __init__(self, out, status=IO.OFF, trigger_on=IO.ON, delay=0.2):
+    def __init__(self, out,
+                 status=IO.OFF, trigger_on=IO.ON, delay=0.2, sleep=time.sleep):
+        self.sleep = sleep
         self.out = out
         self.trigger_on = trigger_on
         self.delay = delay

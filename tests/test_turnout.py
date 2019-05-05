@@ -5,4 +5,4 @@ class TestTurnout:
 
     def test_straight(self, turnout):
         turnout.switch(Turnout.STRAIGHT)
-        assert turnout.status == Turnout.STRAIGHT 
+        assert turnout.status == Turnout.STRAIGHT

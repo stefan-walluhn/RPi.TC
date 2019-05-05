@@ -1,6 +1,4 @@
-from rpitc.section import Section
-from rpitc.station.gateway import Entrance, BareEntrance
-import fysom
+from rpitc.station.gateway import BareEntrance
 import pytest
 
 

@@ -16,6 +16,7 @@ class Store(object):
                             raise PathCollisionError(
                                 'path collision detected', p)
                 self._paths.append(path)
+            return True
 
         def unregister(self, path):
             self._paths.remove(path)

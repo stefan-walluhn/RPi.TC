@@ -23,4 +23,3 @@ class TestStore:
         store.register(trail.path)
         store.unregister(trail.path)
         assert store._paths == []
-

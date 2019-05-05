@@ -55,7 +55,7 @@ class TestTrail:
         on_change = mock()
         trail.onchangestate(on_change)
         trail.register()
-        assert on_change.call_count is 2
+        assert on_change.call_count == 2
 
 
 class TestTrailObserver:
@@ -71,7 +71,7 @@ class TestTrailObserver:
             on_change = mock()
         trail_observer = MockTrailObserver(trail)
         trail.register()
-        assert trail_observer.on_change.call_count is 2
+        assert trail_observer.on_change.call_count == 2
 
     def test_on_change(self, mock, adapter, trail_observer):
         class _e_obj(object):

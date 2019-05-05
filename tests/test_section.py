@@ -17,6 +17,7 @@ import pytest
 def previous(mock):
     return mock()
 
+
 @pytest.fixture(scope='function')
 def base_entrance_section(previous):
     return BaseEntranceSection(previous=previous)

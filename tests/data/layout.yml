@@ -1,0 +1,11 @@
+turnouts:
+    test_turnout_a: foo
+    test_turnout_b: foo
+    test_turnout_c: foo
+trails:
+    test_trail_a:
+        - test_turnout_a
+        - test_turnout_b
+    test_trail_b:
+        - test_turnout_b
+        - test_turnout_c
